@@ -1,0 +1,115 @@
+# Product Requirements Document (PRD): SentinelAI - Intelligent Log & Database Diagnostic Assistant
+
+**Status:** MVP (Minimum Viable Product) untuk Portofolio Global
+**Target Audience:** Backend Engineer / Java Developer, DevOps / SysAdmin
+**Version:** 1.0
+
+---
+
+## 1. Context & Problem Statement
+
+Visi: Membangun "anggota tim" virtual berbasis AI yang mampu mengurangi Mean Time to Resolution (MTTR) secara drastis dengan mendeteksi, mendiagnosis, dan memberikan solusi kode atas kegagalan infrastruktur backend dan database secara real-time.
+
+Konteks Proyek: Sistem transaksional berskala besar (seperti sistem manajemen keuangan atau modul akuntansi publik) sering kali menghasilkan stack trace yang rumit ketika terjadi kegagalan. SentinelAI hadir sebagai perantara pintar antara server aplikasi (backend) dan developer, menerjemahkan log error teknis menjadi akar masalah yang mudah dipahami manusia beserta rekomendasi perbaikannya.
+
+---
+
+## 2. Objectives (Tujuan)
+
+* Membangun "anggota tim" virtual berbasis AI yang mampu mengurangi Mean Time to Resolution (MTTR) secara drastis.
+* Mendeteksi, mendiagnosis, dan memberikan solusi kode atas kegagalan infrastruktur backend dan database secara real-time.
+* Menerjemahkan log error teknis menjadi akar masalah yang mudah dipahami manusia beserta rekomendasi perbaikannya.
+* Menunjukkan pemahaman bisnis dengan memposisikan proyek ini di antara pemain besar yang sudah ada.
+
+---
+
+## 3. Market Landscape & Competitive Advantage
+
+Untuk menunjukkan pemahaman bisnis, penting untuk memposisikan proyek ini di antara pemain besar yang sudah ada.
+
+### Aplikasi Exist (Kompetitor)
+
+* **Sentry / Datadog / New Relic:** Merupakan standar industri untuk Application Performance Monitoring (APM) dan error tracking.
+* **Splunk:** Platform masif untuk agregasi log.
+
+### Kelebihan & Diferensiasi SentinelAI (Unique Selling Proposition)
+
+Sebagian besar tools yang ada saat ini sangat mahir mengumpulkan dan memvisualisasikan error, tetapi masih menyerahkan tugas mendiagnosis kepada developer.
+
+SentinelAI mengambil langkah lebih jauh: tidak hanya menampilkan error, tetapi menggunakan LLM (context window besar) untuk memahami korelasi antara codebase, stack trace, dan status database, lalu memberikan rekomendasi resolusi instan (misal: "Error ini terjadi karena limit kolom tabel. Tambahkan anotasi @Size di entitas Java Anda").
+
+---
+
+## 4. Target Audience (User Personas)
+
+* **Backend Engineer / Java Developer:** Membutuhkan solusi cepat saat debugging kegagalan API atau query SQL di environment pengembangan atau staging.
+* **DevOps / SysAdmin:** Membutuhkan peringatan proaktif jika ada anomali berulang pada log server yang berpotensi mematikan layanan.
+
+---
+
+## 5. Core Features & Requirements
+
+### 5.1. High-Volume Log Ingestion Engine
+
+Deskripsi: Endpoint atau agent yang mampu menerima aliran data log dari server aplikasi target.
+
+Requirement:
+
+* Mampu mem- parsing format log standar (JSON, Logback/Log4j).
+* Memiliki mekanisme queue (antrean) agar tidak crash saat terjadi lonjakan error (spike traffic).
+* (Opsional untuk ekspansi: Mendukung akselerasi GPU untuk memproses klasifikasi data log historis berskala jutaan baris).
+
+### 5.2. Contextual AI Diagnostic Service
+
+Deskripsi: Otak dari aplikasi yang menerjemahkan stack trace.
+
+Requirement:
+
+* Terintegrasi dengan LLM API (seperti Gemini Pro atau Claude).
+* Memiliki sistem prompt engineering dinamis yang menyuntikkan konteks spesifik (bahasa pemrograman, jenis database) sebelum dikirim ke AI.
+
+### 5.3. Actionable Resolution Dashboard
+
+Deskripsi: Antarmuka (bisa berbasis web atau integrasi webhook ke Slack/Discord) untuk menampilkan hasil diagnosis.
+
+Requirement:
+
+* Menampilkan ringkasan kejadian (Kapan, Dimana, Seberapa sering).
+* Menampilkan penjelasan penyebab masalah (Root Cause).
+* Menampilkan blok kode rekomendasi perbaikan.
+
+---
+
+## 6. Technical Architecture & SDLC Standards (Portfolio Focus)
+
+Bagian ini dirancang khusus untuk memukau recruiter dengan menunjukkan standar kerja profesional.
+
+* **Target Application Backend:** Java (Spring Boot) untuk layanan diagnostik.
+* **Simulated Client Application:** Buat satu microservice terpisah (misal: modul simulasi Buku Kas Umum/Pencatatan Keuangan Publik) yang sengaja dirancang untuk melempar error transaksional ke layanan diagnostik Anda.
+* **Infrastructure as Code (IaC):** Gunakan Terraform atau Ansible untuk men- deploy otomatis environment database (misal PostgreSQL/Oracle) dan server aplikasi.
+
+### Version Control & CI/CD
+
+* Implementasikan strategi branching yang ketat (misal: GitFlow).
+* Wajib mendemonstrasikan proses pembuatan Merge Request (MR) / Pull Request (PR) di GitLab/GitHub dengan deskripsi rapi sebelum code di- merge ke branch utama.
+
+---
+
+## 7. Key Use Case Flow (Contoh Skenario)
+
+* **Trigger:** Aplikasi target (modul kas) mencoba melakukan insert data deskripsi transaksi ke database.
+* **Error Terjadi:** Terjadi kegagalan di level database, menghasilkan kode error spesifik seperti ORA-12899: value too large for column (atau setara di Postgres/MySQL), yang memicu stack trace panjang di Java.
+* **Ingestion:** SentinelAI menangkap log error tersebut.
+* **AI Analysis:** SentinelAI membuang noise pada stack trace, mengekstrak baris kueri yang gagal, dan mengirimkannya ke LLM.
+* **Resolution:** Dashboard menampilkan: "Gagal melakukan insert pada tabel transaksi. Teks input memiliki 75 karakter, sedangkan limit kolom di database adalah 50 karakter. Solusi: Truncate input di sisi Java sebelum memanggil repository, atau lakukan ALTER TABLE untuk memperlebar kolom."
+
+---
+
+## 8. Success Metrics
+
+* Sistem berhasil menangkap dan mendiagnosis error dalam waktu kurang dari 5 detik setelah log diterima.
+* Rekomendasi AI terbukti akurat dalam menyimulasikan perbaikan pada aplikasi target.
+
+---
+
+Dengan PRD yang solid ini, Anda sudah memiliki cetak biru proyek berstandar industri. Anda tidak hanya membangun sebuah "aplikasi", tetapi sebuah solusi ekosistem.

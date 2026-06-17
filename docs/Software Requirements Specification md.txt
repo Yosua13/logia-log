@@ -1,0 +1,97 @@
+Berikut adalah pembaruan Dokumen *Software Requirements Specification* (SRS) SentinelAI yang telah dikonsolidasikan dan disempurnakan. Versi ini memuat solusi arsitektural *Dynamic Schema Injection* dan skenario pengujian komprehensif pada ekosistem simulasi.
+
+---
+
+# Software Requirements Specification (SRS)
+
+**Project:** SentinelAI - Intelligent Log & Database Diagnostic Assistant
+**Version:** 2.0 (Updated with Dynamic Schema Architecture & Simulation Flow)
+**Status:** Ready for Development
+
+## 1. Pendahuluan
+
+### 1.1 Tujuan
+
+Dokumen ini mendefinisikan arsitektur, fitur, alur sistem, dan batas operasional dari SentinelAI. Perangkat lunak ini bertindak sebagai *middleware* cerdas yang menerima *log error* dari server aplikasi (*backend*), menganalisis *stack trace* menggunakan AI generatif, serta menyajikan diagnosis *root cause* dan rekomendasi resolusi *code-level* secara seketika (*real-time*).
+
+### 1.2 Tech Stack & Estimasi Biaya ($0 / Open-Source Focus)
+
+Arsitektur ini dirancang menggunakan standar skala *enterprise* dengan ekosistem *open-source* untuk efisiensi biaya.
+
+| Komponen | Teknologi Pilihan | Alasan Pemilihan |
+| --- | --- | --- |
+| **Backend Core** | Java 17+, Spring Boot 3 | Andal untuk multithreading dan ekosistem *enterprise*. |
+| **Database Inti** | PostgreSQL 15 | Pengelolaan relasional dan dukungan JSONB untuk data log. |
+| **Message Broker** | RabbitMQ | Penahan beban (*buffer*) saat terjadi lonjakan *error log*. |
+| **Frontend UI** | React.js / Vue.js + Tailwind | *Rendering dashboard* performa tinggi berbasis komponen. |
+| **AI Engine** | Gemini API (Free Tier) / Llama 3 | Model bahasa tangguh dengan dukungan *context window* besar. |
+| **Keamanan** | Spring Security + JWT | Autentikasi dan otorisasi standar untuk REST API. |
+
+---
+
+## 2. Arsitektur Inti: Dynamic Schema Injection
+
+Keterbatasan utama dalam menggunakan LLM untuk diagnostik *database* skala besar (100+ tabel) adalah limitasi *context window* dan tingginya konsumsi token. Memasukkan seluruh skema *database* ke dalam *prompt* AI adalah praktik yang tidak efisien dan berisiko memicu halusinasi AI.
+
+Oleh karena itu, SentinelAI mengimplementasikan arsitektur **Dynamic Schema Injection** dengan spesifikasi berikut:
+
+* **Log Parsing & Keyword Extraction:** SentinelAI membedah *stack trace* menggunakan *Regular Expression* (Regex) untuk menemukan nama tabel atau parameter kueri yang memicu kegagalan (misal: ekstraksi kata `BUKU_KAS_UMUM` dari teks *error* SQL).
+* **Metadata Querying:** Setelah nama tabel teridentifikasi, sistem secara mandiri menjalankan kueri ke `information_schema` pada *database* target menggunakan kredensial *read-only*. Langkah ini murni untuk mengambil struktur DDL (Data Definition Language) dari tabel spesifik yang bermasalah.
+* **Contextual Prompt Assembly:** SentinelAI menggabungkan hanya *log error* mentah dan struktur satu tabel spesifik tersebut ke dalam *prompt* sebelum dikirimkan ke model AI, memastikan penggunaan token minimal dengan akurasi maksimal.
+
+---
+
+## 3. Ekosistem Simulasi Target Aplikasi
+
+Untuk memvalidasi keandalan SentinelAI, sebuah *microservice* simulasi (*Target App*) akan dibangun. Simulasi ini merepresentasikan modul manajemen keuangan publik dari ekosistem *enterprise* yang kompleks.
+
+* **Nama Domain Simulasi:** NEWSIPKD
+* **Nama Repositori/Layanan Target:** `bku-ppkd-server` (Buku Kas Umum - Pejabat Pengelola Keuangan Daerah)
+* **Skema Database Target Utama:**
+* `users` (Data pengguna sistem)
+* `budget_allocations` (Alokasi anggaran tahun fiskal)
+* `buku_kas_umum` (Pencatatan mutasi kas dengan validasi kolom ketat)
+
+
+
+---
+
+## 4. Alur Interaksi Sistem (End-to-End Flow)
+
+Sistem memiliki dua skenario utama untuk mendemonstrasikan penyaringan otomatis dan penanganan *error* kritis.
+
+### 4.1 Skenario Berhasil (Happy Path - Non-Intrusive)
+
+Skenario ini menunjukkan kemampuan SentinelAI untuk tidak membuang *resource* pada proses operasional yang normal.
+
+1. Klien (pengguna web) mengirimkan *request* penambahan data transaksi ke `bku-ppkd-server`.
+2. Validasi Java di *backend* target berhasil dilewati.
+3. Kueri `INSERT` dieksekusi oleh *database* dan transaksi tersimpan.
+4. Aplikasi target mencetak *log* level `INFO`.
+5. RabbitMQ mengirim *log* tersebut ke SentinelAI.
+6. Sistem kategorisasi SentinelAI mendeteksi level `INFO` dan hanya merekamnya sebagai data analitik *uptime* tanpa memicu pemanggilan API AI.
+
+### 4.2 Skenario Gagal Kompleks (Failure Path - AI Triggered)
+
+Skenario ini mendemonstrasikan proses resolusi analitik secara utuh saat terjadi anomali integritas data.
+
+1. Klien menginput "Uraian BKU" sepanjang 150 karakter, melewati batas aman.
+2. `bku-ppkd-server` menerima *payload*, melewatkan validasi *controller*, dan mencoba mengeksekusi kueri ke *database*.
+3. *Database* menolak eksekusi dan memicu *error* (misal: `ORA-12899: value too large for column` pada tabel `BUKU_KAS_UMUM`).
+4. Java menghasilkan *stack trace* panjang yang langsung ditangkap oleh *logger* (Logback) dan dikirim ke RabbitMQ SentinelAI.
+5. SentinelAI memproses *log* dan mengekstrak nama tabel `BUKU_KAS_UMUM` dari teks *error*.
+6. SentinelAI melakukan *Dynamic Schema Fetch* untuk mengambil spesifikasi kolom dari tabel tersebut.
+7. *Prompt* dirakit dan dikirimkan ke AI Engine.
+8. AI mengembalikan respons terstruktur berupa format JSON.
+9. *Developer* memantau UI Dashboard SentinelAI dan melihat peringatan merah. Saat diklik, *developer* langsung menerima diagnosis akhir: *"Insert gagal pada kolom URAIAN_TRANSAKSI (Limit 100, Input 150). Rekomendasi: Terapkan anotasi @Size(max=100) pada Data Transfer Object (DTO) di modul bku-ppkd-server."*
+
+---
+
+## 5. Analisis Risiko Mendalam & Mitigasi (Edge Cases)
+
+| Kategori Risiko | Deskripsi Skenario Ekstrem | Strategi Mitigasi SentinelAI |
+| --- | --- | --- |
+| **Spike Traffic & Log Flood** | *Infinite loop* pada `bku-ppkd-server` memicu ribuan *log error* per detik, berpotensi menghabiskan limit API AI. | Implementasi *Log Deduplication*. Sistem melakukan *hashing* pada *stack trace*. Jika *error* ber- *hash* sama muncul dalam 10 menit terakhir, sistem menggunakan hasil AI dari memori *cache*. |
+| **Kebocoran Data Sensitif** | Variabel nominal transaksi atau data pribadi tercetak ke dalam *log* secara tidak sengaja oleh pengembang Target App. | Implementasi modul *Data Masking* dengan ekspresi reguler (Regex) sebelum *prompt* dirakit, menyensor format angka keuangan atau NIK menjadi `[REDACTED]`. |
+| **AI Hallucination** | Model LLM berhalusinasi dan memberikan skrip SQL destruktif seperti perintah `DROP TABLE`. | Arsitektur *Strictly Read-Only*. SentinelAI tidak memiliki koneksi *write* ke *Target App*. Dasbor secara eksplisit memberikan label peringatan bahwa solusi bersifat advisori dan memerlukan tinjauan manusia. |
+| **Message Queue Overload** | Koneksi dari RabbitMQ ke basis data internal SentinelAI terputus, menyebabkan RAM antrean habis (*Out of Memory*). | Konfigurasi *Dead Letter Queue* (DLQ) dan pengaturan *Time to Live* (TTL). Pesan *log* yang tertahan lebih dari periode tertentu akan dibuang secara otomatis untuk menjaga stabilitas *server*. |
