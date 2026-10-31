@@ -1,29 +1,51 @@
-version: '3.8'
-
 services:
   postgres:
-    image: postgres:15-alpine
+    image: postgres:18.4-alpine
     container_name: sentinel_postgres
+    env_file:
+      - path: ./backend/.env
+        required: false
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: sentinel_db
+      POSTGRES_USER: ${POSTGRES_USER:-sentinel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sentinel_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-sentinel_db}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-sentinel} -d $${POSTGRES_DB:-sentinel_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:4-management-alpine
     container_name: sentinel_rabbitmq
+    env_file:
+      - path: ./backend/.env
+        required: false
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-sentinel}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-sentinel_secret}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "${RABBITMQ_AMQP_PORT:-5672}:5672"
+      - "${RABBITMQ_MGMT_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
+
+  # Catatan Arsitektur:
+  # Redis menggunakan Managed Redis SaaS (Upstash Serverless Redis Free Tier via TLS rediss://)
+  # sehingga tidak dijalankan sebagai container lokal. Konfigurasi ada di backend/.env.
 
 volumes:
   postgres_data:
+  rabbitmq_data:
