@@ -1,0 +1,121 @@
+spring:
+  application:
+    name: sentinelai-backend
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:backend/.env[.properties]
+
+  # Java 25 LTS Project Loom Virtual Threads (Non-blocking I/O for SSE, RabbitMQ & HTTP Proxy)
+  threads:
+    virtual:
+      enabled: true
+
+  # PostgreSQL 18.4 Configuration
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:sentinel_db}
+    username: ${POSTGRES_USER:sentinel}
+    password: ${POSTGRES_PASSWORD:sentinel_secret}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: SentinelHikariPool
+      maximum-pool-size: 20
+      minimum-idle: 4
+      connection-timeout: 10000
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format_sql: false
+
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  # RabbitMQ 4.x Broker Configuration (Virtual Threads Listener + DLQ Ready)
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_AMQP_PORT:5672}
+    username: ${RABBITMQ_USER:sentinel}
+    password: ${RABBITMQ_PASSWORD:sentinel_secret}
+    virtual-host: ${RABBITMQ_VHOST:/}
+    listener:
+      simple:
+        acknowledge-mode: auto
+        concurrency: 4
+        max-concurrency: 16
+        prefetch: 50
+        default-requeue-rejected: false
+
+  # Managed Redis SaaS: Upstash Serverless Redis (Free Tier via TLS rediss://)
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      url: ${UPSTASH_REDIS_URL:rediss://default:placeholder@localhost:6379}
+      timeout: 3s
+      connect-timeout: 5s
+      ssl:
+        enabled: ${REDIS_SSL_ENABLED:true}
+      lettuce:
+        pool:
+          # Konservatif untuk menghemat koneksi & kuota 500K command/bulan Upstash Free Tier
+          enabled: true
+          max-active: 8
+          max-idle: 4
+          min-idle: 0
+          max-wait: 2s
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 15m
+      cache-null-values: false
+
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+  health:
+    # Matikan polling PING otomatis ke Redis SaaS agar kuota command bulanan Upstash tetap hemat
+    redis:
+      enabled: false
+    rabbit:
+      enabled: false
+
+sentinel:
+  cors:
+    allowed-origins:
+      - ${FRONTEND_ORIGIN:http://localhost:5173}
+  messaging:
+    consumer-enabled: ${SENTINEL_RABBIT_CONSUMER_ENABLED:false}
+    exchange: sentinel.logs.exchange
+    queue: sentinel.logs.ingest.queue
+    routing-key: logs.ingest.#
+    dlx: sentinel.logs.dlx
+    dlq: sentinel.logs.dlq
+    message-ttl-ms: 86400000
+  deduplication:
+    redis-enabled: ${SENTINEL_REDIS_DEDUP_ENABLED:false}
+    window-seconds: 300
+    recurring-threshold: 3
+  ai:
+    cooldown-seconds: 900
+    provider: ${AI_PROVIDER:gemini}
+    model: ${AI_MODEL:gemini-2.5-pro}
+

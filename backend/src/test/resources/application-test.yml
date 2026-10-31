@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:sentinel_test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: none
+  flyway:
+    enabled: false
+  cache:
+    type: none
+  data:
+    redis:
+      url: redis://localhost:6379
+      host: localhost
+      port: 6379
+
+sentinel:
+  messaging:
+    consumer-enabled: false
+  deduplication:
+    redis-enabled: false
+
