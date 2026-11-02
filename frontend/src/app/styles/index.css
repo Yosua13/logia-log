@@ -2,17 +2,17 @@
 
 :root {
   /* 60% Dominant Colors (Obsidian Black Default) */
-  --sentinel-bg-primary: #0A0A0A;
-  --sentinel-bg-elevated: #121212;
+  --logialog-bg-primary: #0A0A0A;
+  --logialog-bg-elevated: #121212;
 
   /* 30% Structural Secondary Colors (Royal / Metallic Gold) */
-  --sentinel-gold-metallic: #D4AF37;
-  --sentinel-gold-champagne: #C5A059;
-  --sentinel-gold-deep: #9A7B2C;
+  --logialog-gold-metallic: #D4AF37;
+  --logialog-gold-champagne: #C5A059;
+  --logialog-gold-deep: #9A7B2C;
 
   /* 10% Interactive Accent Colors (Luminous Highlight) */
-  --sentinel-gold-luminous: #FFD700;
-  --sentinel-gold-amber: #F59E0B;
+  --logialog-gold-luminous: #FFD700;
+  --logialog-gold-amber: #F59E0B;
 
   /* Typography */
   --font-sans: 'Plus Jakarta Sans', Inter, system-ui, -apple-system, sans-serif;
@@ -28,15 +28,15 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: var(--sentinel-bg-primary);
+  background-color: var(--logialog-bg-primary);
   color: #F5F5F5;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
 /* Sharp-Angled Tactical Container (border-radius: 2px) */
-.sentinel-container {
-  background-color: var(--sentinel-bg-primary);
+.logialog-container {
+  background-color: var(--logialog-bg-primary);
   border: 1px solid rgba(212, 175, 55, 0.38);
   border-radius: 2px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.85);
@@ -44,7 +44,7 @@ body {
 }
 
 /* 4-Corner 10px Gold Tactical Accents (PRD Section 7.2) */
-.sentinel-tactical-corners {
+.logialog-tactical-corners {
   background-image:
     linear-gradient(to right, #FFD700 2px, transparent 2px),
     linear-gradient(to bottom, #FFD700 2px, transparent 2px),
@@ -67,10 +67,10 @@ body {
     bottom -1px right -1px;
 }
 
-.sentinel-btn-primary {
-  background-color: var(--sentinel-gold-luminous);
+.logialog-btn-primary {
+  background-color: var(--logialog-gold-luminous);
   color: #0A0A0A;
-  border: 1px solid var(--sentinel-gold-metallic);
+  border: 1px solid var(--logialog-gold-metallic);
   border-radius: 2px;
   font-weight: 700;
   text-transform: uppercase;
@@ -78,14 +78,14 @@ body {
   cursor: pointer;
 }
 
-.sentinel-btn-primary:hover {
-  background-color: var(--sentinel-gold-amber);
+.logialog-btn-primary:hover {
+  background-color: var(--logialog-gold-amber);
 }
 
-.sentinel-btn-secondary {
-  background-color: var(--sentinel-bg-elevated);
-  color: var(--sentinel-gold-metallic);
-  border: 1px solid var(--sentinel-gold-metallic);
+.logialog-btn-secondary {
+  background-color: var(--logialog-bg-elevated);
+  color: var(--logialog-gold-metallic);
+  border: 1px solid var(--logialog-gold-metallic);
   border-radius: 2px;
   font-weight: 600;
   text-transform: uppercase;
@@ -93,14 +93,14 @@ body {
   cursor: pointer;
 }
 
-.sentinel-btn-secondary:hover {
-  border-color: var(--sentinel-gold-luminous);
-  color: var(--sentinel-gold-luminous);
+.logialog-btn-secondary:hover {
+  border-color: var(--logialog-gold-luminous);
+  color: var(--logialog-gold-luminous);
 }
 
-.sentinel-btn-ghost {
+.logialog-btn-ghost {
   background-color: transparent;
-  color: var(--sentinel-gold-champagne);
+  color: var(--logialog-gold-champagne);
   border: 1px solid transparent;
   border-radius: 2px;
   font-weight: 600;
@@ -108,4 +108,3 @@ body {
   letter-spacing: 0.05em;
   cursor: pointer;
 }
-

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: sentinelai-backend
+    name: logialog-backend
   config:
     import:
       - optional:file:.env[.properties]
@@ -13,12 +13,12 @@ spring:
 
   # PostgreSQL 18.4 Configuration
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:sentinel_db}
-    username: ${POSTGRES_USER:sentinel}
-    password: ${POSTGRES_PASSWORD:sentinel_secret}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:logialog_db}
+    username: ${POSTGRES_USER:logialog}
+    password: ${POSTGRES_PASSWORD:logialog_secret}
     driver-class-name: org.postgresql.Driver
     hikari:
-      pool-name: SentinelHikariPool
+      pool-name: LogiaLogHikariPool
       maximum-pool-size: 20
       minimum-idle: 4
       connection-timeout: 10000
@@ -42,8 +42,8 @@ spring:
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_AMQP_PORT:5672}
-    username: ${RABBITMQ_USER:sentinel}
-    password: ${RABBITMQ_PASSWORD:sentinel_secret}
+    username: ${RABBITMQ_USER:logialog}
+    password: ${RABBITMQ_PASSWORD:logialog_secret}
     virtual-host: ${RABBITMQ_VHOST:/}
     listener:
       simple:
@@ -98,24 +98,23 @@ management:
     rabbit:
       enabled: false
 
-sentinel:
+logialog:
   cors:
     allowed-origins:
       - ${FRONTEND_ORIGIN:http://localhost:5173}
   messaging:
-    consumer-enabled: ${SENTINEL_RABBIT_CONSUMER_ENABLED:false}
-    exchange: sentinel.logs.exchange
-    queue: sentinel.logs.ingest.queue
+    consumer-enabled: ${LOGIALOG_RABBIT_CONSUMER_ENABLED:false}
+    exchange: logialog.logs.exchange
+    queue: logialog.logs.ingest.queue
     routing-key: logs.ingest.#
-    dlx: sentinel.logs.dlx
-    dlq: sentinel.logs.dlq
+    dlx: logialog.logs.dlx
+    dlq: logialog.logs.dlq
     message-ttl-ms: 86400000
   deduplication:
-    redis-enabled: ${SENTINEL_REDIS_DEDUP_ENABLED:false}
+    redis-enabled: ${LOGIALOG_REDIS_DEDUP_ENABLED:false}
     window-seconds: 300
     recurring-threshold: 3
   ai:
     cooldown-seconds: 900
     provider: ${AI_PROVIDER:gemini}
     model: ${AI_MODEL:gemini-2.5-pro}
-

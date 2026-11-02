@@ -1,6 +1,6 @@
-# SentinelAI v3.1 — Backend Service
+# Logia Log v3.1 — Backend Service
 
-Layanan inti **SentinelAI v3.1 (Target-Agnostic Enterprise Edition)** yang dibangun menggunakan **Clean / Hexagonal Architecture (Ports & Adapters)** dan **Event-Driven Architecture**.
+Layanan inti **Logia Log v3.1 (Target-Agnostic Enterprise Edition)** yang dibangun menggunakan **Clean / Hexagonal Architecture (Ports & Adapters)** dan **Event-Driven Architecture**.
 
 ---
 
@@ -57,17 +57,17 @@ docker compose up -d
 docker compose ps
 ```
 Ini akan menyalakan:
-- `sentinel_postgres` (`postgres:18.4-alpine`) di `localhost:5432`
-- `sentinel_rabbitmq` (`rabbitmq:4-management-alpine`) di `localhost:5672` (UI: `http://localhost:15672`)
+- `logialog_postgres` (`postgres:18.4-alpine`) di `localhost:5432`
+- `logialog_rabbitmq` (`rabbitmq:4-management-alpine`) di `localhost:5672` (UI: `http://localhost:15672`)
 
 #### Opsi 2 — Menggunakan PostgreSQL `18.4` Lokal (`psql`)
 Jika Anda memakai instalasi PostgreSQL `18.4` lokal di komputer Anda, buat user dan database berikut melalui `psql`:
 ```sql
-CREATE USER sentinel WITH PASSWORD 'sentinel_secret';
-CREATE DATABASE sentinel_db OWNER sentinel;
-GRANT ALL PRIVILEGES ON DATABASE sentinel_db TO sentinel;
+CREATE USER logialog WITH PASSWORD 'logialog_secret';
+CREATE DATABASE logialog_db OWNER logialog;
+GRANT ALL PRIVILEGES ON DATABASE logialog_db TO logialog;
 ```
-*(Saat backend pertama kali dijalankan, **Flyway** akan otomatis mengeksekusi migrasi `src/main/resources/db/migration/V1__init_sentinel_schema.sql`).*
+*(Saat backend pertama kali dijalankan, **Flyway** akan otomatis mengeksekusi migrasi `src/main/resources/db/migration/V1__init_logialog_schema.sql`).*
 
 ### B. Setup Upstash Serverless Redis SaaS (Gratis)
 1. Buka https://console.upstash.com/ dan login (gratis tanpa kartu kredit).
@@ -89,21 +89,21 @@ Backend dikonfigurasi mandiri dengan `spring.config.import` agar otomatis membac
    ```env
    POSTGRES_HOST=localhost
    POSTGRES_PORT=5432
-   POSTGRES_DB=sentinel_db
-   POSTGRES_USER=sentinel
-   POSTGRES_PASSWORD=sentinel_secret
+   POSTGRES_DB=logialog_db
+   POSTGRES_USER=logialog
+   POSTGRES_PASSWORD=logialog_secret
 
    RABBITMQ_HOST=localhost
    RABBITMQ_AMQP_PORT=5672
-   RABBITMQ_USER=sentinel
-   RABBITMQ_PASSWORD=sentinel_secret
-   SENTINEL_RABBIT_CONSUMER_ENABLED=false
+   RABBITMQ_USER=logialog
+   RABBITMQ_PASSWORD=logialog_secret
+   LOGIALOG_RABBIT_CONSUMER_ENABLED=false
 
    UPSTASH_REDIS_URL=rediss://default:<PASSWORD_UPSTASH_ANDA>@<ENDPOINT_ANDA>.upstash.io:6379
    REDIS_SSL_ENABLED=true
-   SENTINEL_REDIS_DEDUP_ENABLED=false
+   LOGIALOG_REDIS_DEDUP_ENABLED=false
    ```
-   > **Catatan Mode Offline/Dev Cepat:** Jika RabbitMQ atau Upstash Redis belum ingin diaktifkan saat mencoba awal, biarkan `SENTINEL_RABBIT_CONSUMER_ENABLED=false` dan `SENTINEL_REDIS_DEDUP_ENABLED=false` (sistem otomatis memakai fallback counter in-memory). Docker Compose di root juga otomatis membaca kredensial database & broker dari file `backend/.env` ini.
+   > **Catatan Mode Offline/Dev Cepat:** Jika RabbitMQ atau Upstash Redis belum ingin diaktifkan saat mencoba awal, biarkan `LOGIALOG_RABBIT_CONSUMER_ENABLED=false` dan `LOGIALOG_REDIS_DEDUP_ENABLED=false` (sistem otomatis memakai fallback counter in-memory). Docker Compose di root juga otomatis membaca kredensial database & broker dari file `backend/.env` ini.
 
 ---
 
@@ -130,7 +130,7 @@ Pengujian memakai profil `test` (`src/test/resources/application-test.yml` denga
 ### 3. Build Artefak Production JAR & Menjalankannya
 ```powershell
 .\mvnw.cmd clean package -DskipTests
-java -jar target\sentinelai-backend-0.1.0-SNAPSHOT.jar
+java -jar target\logialog-backend-0.1.0-SNAPSHOT.jar
 ```
 
 ---
@@ -152,7 +152,7 @@ Setelah backend aktif di `http://localhost:8080`, uji dengan perintah berikut:
    $body = @{
      serviceName = "order-service"
      level       = "ERROR"
-     traceId     = "sntl-test-trace-001"
+     traceId     = "logia-test-trace-001"
      rawMessage  = "PSQLException: value too long for type character varying(50)"
      stackTrace  = "org.postgresql.util.PSQLException at com.app.OrderRepo.save(OrderRepo.java:42)"
    } | ConvertTo-Json
@@ -166,11 +166,11 @@ Setelah backend aktif di `http://localhost:8080`, uji dengan perintah berikut:
 
 ---
 
-## 7. Struktur Arsitektur Clean Hexagonal (`com.sentinelai`)
+## 7. Struktur Arsitektur Clean Hexagonal (`com.logialog`)
 
 ```text
-src/main/java/com/sentinelai/
-├── SentinelAiApplication.java        # Main entrypoint Spring Boot 4.1.2
+src/main/java/com/logialog/
+├── LogiaLogApplication.java          # Main entrypoint Spring Boot 4.1.2
 ├── config/                           # Konfigurasi Security, RabbitMQ DLQ, Upstash Redis & Properties
 ├── domain/                           # Inti bisnis murni (LogEntry, Fingerprinter SHA-256, PII Sanitizer)
 ├── application/
@@ -195,10 +195,9 @@ src/main/java/com/sentinelai/
 
 ## 8. Troubleshooting Umum
 
-- **Error `SentinelAI v3.1 membutuhkan Java 25 LTS` saat menjalankan Maven:**
+- **Error `Logia Log v3.1 membutuhkan Java 25 LTS` saat menjalankan Maven:**
   Artinya `JAVA_HOME` di terminal Anda masih menunjuk ke JDK di bawah versi 25 (misalnya JDK 11/17/21). Ikuti langkah pada **Bagian 2** di atas.
 - **Gagal konek ke PostgreSQL (`Connection refused` di port `5432`):**
-  Pastikan Docker container `sentinel_postgres` atau service PostgreSQL `18.4` lokal sudah menyala, dan username/password di `.env` sesuai.
+  Pastikan Docker container `logialog_postgres` atau service PostgreSQL `18.4` lokal sudah menyala, dan username/password di `backend/.env` sesuai.
 - **Koneksi Upstash Redis Timeout / SSL Handshake Error:**
   Pastikan URL menggunakan skema **`rediss://`** (dengan dua huruf `s` untuk TLS) dan `REDIS_SSL_ENABLED=true`.
-

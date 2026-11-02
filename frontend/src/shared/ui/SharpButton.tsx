@@ -13,10 +13,10 @@ export function SharpButton({
 }: SharpButtonProps) {
   const variantClass =
     variant === 'primary'
-      ? 'sentinel-btn-primary'
+      ? 'logialog-btn-primary'
       : variant === 'secondary'
-        ? 'sentinel-btn-secondary'
-        : 'sentinel-btn-ghost'
+        ? 'logialog-btn-secondary'
+        : 'logialog-btn-ghost'
 
   return (
     <button
@@ -28,4 +28,3 @@ export function SharpButton({
     </button>
   )
 }
-

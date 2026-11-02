@@ -23,7 +23,7 @@ export function ApiRequestBuilder() {
   return (
     <GoldFrameCard
       title="Interactive API Request Studio"
-      subtitle="FR-API-01..07 • Auto-Injects X-Sentinel-Trace-Id for Instant Log & AI Correlation"
+      subtitle="FR-API-01..07 • Auto-Injects X-Logia-Trace-Id for Instant Log & AI Correlation"
       badge="PROXY OVERHEAD < 15MS"
     >
       <div className="flex flex-wrap gap-2">
@@ -54,7 +54,7 @@ export function ApiRequestBuilder() {
         <div className="font-mono text-xs text-[#C5A059]">
           Auto Header:{' '}
           <code className="border border-[#9A7B2C]/60 bg-[#121212] px-2 py-0.5 text-[#FFD700]">
-            X-Sentinel-Trace-Id: {tracePreview}
+            X-Logia-Trace-Id: {tracePreview}
           </code>
         </div>
       </div>

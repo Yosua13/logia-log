@@ -66,7 +66,7 @@ export function LiveLogStreamPanel({
                   <div>{item.rawMessage}</div>
                   {item.traceId && (
                     <span className="mt-1 inline-block text-[10px] text-[#C5A059]">
-                      X-Sentinel-Trace-Id: {item.traceId}
+                      X-Logia-Trace-Id: {item.traceId}
                     </span>
                   )}
                 </td>

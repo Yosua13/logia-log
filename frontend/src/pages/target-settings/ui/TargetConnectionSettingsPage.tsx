@@ -9,7 +9,7 @@ export function TargetConnectionSettingsPage() {
     >
       <div className="space-y-3 text-xs text-[#E5E5E5]">
         <p>
-          SentinelAI tidak mengikatkan diri pada satu aplikasi simulasi tertentu. Anda dapat
+          Logia Log tidak mengikatkan diri pada satu aplikasi simulasi tertentu. Anda dapat
           mendaftarkan atau mengosongkan profil koneksi target kapan saja melalui endpoint{' '}
           <code className="font-mono text-[#FFD700]">/api/v1/targets</code>:
         </p>

@@ -1,4 +1,4 @@
-export const SENTINEL_STACK = {
+export const LOGIA_LOG_STACK = {
   version: '3.1.0-enterprise',
   javaRuntime: 'Java 25.0.5.0.2 LTS (HotSpot 64-Bit Server VM)',
   backendFramework: 'Spring Boot 4.1.2 (Clean Hexagonal + Virtual Threads)',
@@ -13,4 +13,3 @@ export type WorkspaceRoute =
   | 'api-studio'
   | 'github-audit'
   | 'target-settings'
-

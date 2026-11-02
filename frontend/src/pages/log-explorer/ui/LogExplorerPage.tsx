@@ -28,12 +28,12 @@ const INITIAL_LOGS: ReadonlyArray<LogEntry> = [
   },
   {
     id: '3',
-    serviceName: 'sentinelai-backend',
+    serviceName: 'logialog-backend',
     level: 'INFO',
     rawMessage: 'Upstash Redis SaaS deduplication window active (TLS rediss:// • Virtual Threads enabled)',
     occurrenceCount: 1,
     recurringAnomaly: false,
-    createdAt: '2026-10-31T11:47:01Z',
+    createdAt: '2026-11-02T11:47:01Z',
   },
 ]
 

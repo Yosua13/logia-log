@@ -19,7 +19,7 @@ export function GoldFrameCard({
 }: GoldFrameCardProps) {
   return (
     <section
-      className={`sentinel-container p-5 ${tacticalCorners ? 'sentinel-tactical-corners' : ''} ${className}`}
+      className={`logialog-container p-5 ${tacticalCorners ? 'logialog-tactical-corners' : ''} ${className}`}
     >
       {(title || badge) && (
         <header className="mb-4 flex items-center justify-between gap-3 border-b border-[#9A7B2C]/50 pb-3">
@@ -44,4 +44,3 @@ export function GoldFrameCard({
     </section>
   )
 }
-

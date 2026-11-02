@@ -1,4 +1,4 @@
-# SentinelAI v3.1 (Target-Agnostic Enterprise Edition)
+# Logia Log v3.1 (Target-Agnostic Enterprise Edition)
 
 **Unified Real-Time Observability (Setara Grafana) • Interactive API Testing Studio (Setara Postman) • Dynamic DB Schema Injection • 7-Layer Deep GitHub AI Diagnostic Platform**
 
@@ -22,7 +22,8 @@
 ```text
 logia-log/
 ├── backend/                                      # Java 25.0.5.0.2 LTS + Spring Boot 4.1.2 (Hexagonal)
-│   ├── src/main/java/com/sentinelai/
+│   ├── .env.example                              # Template environment terpisah untuk backend
+│   ├── src/main/java/com/logialog/
 │   │   ├── adapter/
 │   │   │   ├── in/web/                           # REST Controllers & SSE Streamer (/api/v1/**)
 │   │   │   ├── in/messaging/                     # RabbitMQ Consumer (Virtual Threads)
@@ -42,12 +43,11 @@ logia-log/
 │   │   │   ├── model/                            # Pure Domain Records & Enums
 │   │   │   └── service/                          # SHA-256 Fingerprinter & PII Sanitizer
 │   │   └── config/                               # Security, RabbitMQ DLQ, Upstash Redis & Props
-│   ├── .env.example                                  # Template environment terpisah untuk backend
 │   └── src/main/resources/
 │       ├── application.yml
-│       └── db/migration/V1__init_sentinel_schema.sql
+│       └── db/migration/V1__init_logialog_schema.sql
 ├── frontend/                                     # Node.js v26.13.0 + React 19 + TypeScript (FSD)
-│   ├── .env.example                                  # Template environment terpisah untuk frontend
+│   ├── .env.example                              # Template environment terpisah untuk frontend
 │   └── src/
 │       ├── app/                                  # App Shell & 60-30-10 CSS Design Tokens
 │       ├── pages/                                # LogExplorer, ApiStudio, IncidentAudit, TargetSettings
@@ -56,7 +56,7 @@ logia-log/
 │       ├── entities/                             # Domain TypeScript Interfaces
 │       └── shared/                               # GoldFrameCard, SharpButton, TacticalTabs, API Client
 ├── target-simulation/                            # [KOSONG / AGNOSTIK] Slot opsional sandbox masa depan
-├── docs/                                         # Dokumen PRD SentinelAI v3.1 Enterprise Edition
+├── docs/                                         # Dokumen PRD Logia Log v3.1 Enterprise Edition
 └── docker-compose.yml                            # PostgreSQL 18.4 & RabbitMQ 4.x (membaca backend/.env)
 ```
 
@@ -96,7 +96,7 @@ Copy-Item .env.example .env
 3. Salin URL koneksi **TLS (`rediss://`)** lalu masukkan ke file `backend/.env`:
    ```env
    UPSTASH_REDIS_URL=rediss://default:<PASSWORD>@<ENDPOINT>.upstash.io:6379
-   SENTINEL_REDIS_DEDUP_ENABLED=true
+   LOGIALOG_REDIS_DEDUP_ENABLED=true
    ```
 
 #### D. Menjalankan Infrastruktur, Backend & Frontend
@@ -113,4 +113,3 @@ cd backend
 cd ..\frontend
 npm run dev
 ```
-

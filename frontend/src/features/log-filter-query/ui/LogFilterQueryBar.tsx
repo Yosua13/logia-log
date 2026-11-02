@@ -21,7 +21,7 @@ export function LogFilterQueryBar({
         type="text"
         value={query}
         onChange={(e) => onQueryChange(e.target.value)}
-        placeholder="Filter service, X-Sentinel-Trace-Id, SQLState, atau Regex..."
+        placeholder="Filter service, X-Logia-Trace-Id, SQLState, atau Regex..."
         className="min-w-[260px] flex-1 border border-[#9A7B2C] bg-[#0A0A0A] px-3 py-2 font-mono text-xs text-[#F5F5F5] placeholder-[#C5A059]/50 focus:border-[#FFD700] focus:outline-none"
       />
       <div className="flex border border-[#9A7B2C]">

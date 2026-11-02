@@ -1,20 +1,20 @@
 services:
   postgres:
     image: postgres:18.4-alpine
-    container_name: sentinel_postgres
+    container_name: logialog_postgres
     env_file:
       - path: ./backend/.env
         required: false
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-sentinel}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sentinel_secret}
-      POSTGRES_DB: ${POSTGRES_DB:-sentinel_db}
+      POSTGRES_USER: ${POSTGRES_USER:-logialog}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-logialog_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-logialog_db}
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-sentinel} -d $${POSTGRES_DB:-sentinel_db}"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-logialog} -d $${POSTGRES_DB:-logialog_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,13 +22,13 @@ services:
 
   rabbitmq:
     image: rabbitmq:4-management-alpine
-    container_name: sentinel_rabbitmq
+    container_name: logialog_rabbitmq
     env_file:
       - path: ./backend/.env
         required: false
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-sentinel}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-sentinel_secret}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-logialog}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-logialog_secret}
       RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
     ports:
       - "${RABBITMQ_AMQP_PORT:-5672}:5672"
