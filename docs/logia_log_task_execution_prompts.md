@@ -92,7 +92,7 @@ Melakukan migrasi penuh backend dari Java versi lama ke **Java 25.0.5.0.2 LTS** 
 ## Scope Pengerjaan & Checklist
 - [ ] Upgrade `backend/pom.xml` ke `spring-boot-starter-parent` versi `4.1.2` dan `<java.version>25</java.version>`.
 - [ ] Tambahkan `maven-enforcer-plugin` untuk memastikan build hanya berjalan pada JDK `>= 25`.
-- [ ] Hapus class `@SpringBootApplication` duplikat bawaan template lama (`DemoApplication` & `BackendApplication`) dan ganti dengan `com.logialog.SentinelAiApplication`.
+- [ ] Hapus class `@SpringBootApplication` duplikat bawaan template lama (`DemoApplication` & `BackendApplication`) dan ganti dengan `com.logialog.LogiaLogApplication`.
 - [ ] Konfigurasi `application.yml` dengan Virtual Threads aktif, CORS terukur untuk frontend, Spring Security 7 stateless, dan Spring Boot Actuator (`/actuator/health`, `/api/v1/system/info`).
 - [ ] Susun kerangka paket Clean Hexagonal lengkap beserta unit/integration test awal (`@SpringBootTest`).
 
@@ -166,7 +166,7 @@ Memanfaatkan fungsi native `uuidv7()` bawaan PostgreSQL 18, *Range Partitioning*
 
 ## Scope Pengerjaan & Checklist
 - [ ] Konfigurasi `spring-boot-starter-flyway` dan `flyway-database-postgresql` pada Spring Boot 4.1.2.
-- [ ] Buat script migrasi `V1__init_sentinel_schema.sql` dan prosedur manajemen partisi otomatis harian/mingguan untuk `app_logs`.
+- [ ] Buat script migrasi `V1__init_logialog_schema.sql` dan prosedur manajemen partisi otomatis harian/mingguan untuk `app_logs`.
 - [ ] Implementasikan JPA Entities / JDBC Repositories di `com.logialog.adapter.out.persistence` beserta Outbound Ports di layer `application`.
 - [ ] Uji eksekusi migrasi dan query JSONB di atas PostgreSQL `18.4`.
 
@@ -199,15 +199,15 @@ Membangun pipeline penerimaan log berkecepatan tinggi melalui **RabbitMQ 4.x** &
 - **FR-LOG-04 (Log Deduplication & Counter)**: Normalisasi stack trace ke SHA-256 fingerprint (mengabaikan timestamp, UUID, memory address), pembaruan `occurrence_count` di `error_aggregates` + Upstash Redis, dan penandaan `Recurring Anomaly`.
 
 ## Scope Pengerjaan & Checklist
-- [ ] Konfigurasi topologi RabbitMQ: `TopicExchange` (`sentinel.logs.exchange`), `Queue` utama (`sentinel.logs.ingest.queue`), `DeadLetterExchange` (`sentinel.logs.dlx`), `DeadLetterQueue` (`sentinel.logs.dlq`), dan `x-message-ttl`.
+- [ ] Konfigurasi topologi RabbitMQ: `TopicExchange` (`logialog.logs.exchange`), `Queue` utama (`logialog.logs.ingest.queue`), `DeadLetterExchange` (`logialog.logs.dlx`), `DeadLetterQueue` (`logialog.logs.dlq`), dan `x-message-ttl`.
 - [ ] Implementasikan `@RabbitListener` yang berjalan di atas **Java 25 Virtual Threads** dengan JSON message converter dan penanganan poison message ke DLQ.
-- [ ] Implementasikan endpoint HTTP alternatif `POST /api/v1/logs/ingest` (mendukung korelasi header `X-Sentinel-Trace-Id`).
+- [ ] Implementasikan endpoint HTTP alternatif `POST /api/v1/logs/ingest` (mendukung korelasi header `X-Logia-Trace-Id`).
 - [ ] Sempurnakan `StackTraceFingerprinter` untuk mengekstrak `exception_class`, `target_file`, dan `target_line` dari stack trace Java/Node/Python/Go.
 - [ ] Implementasikan `SseLogBroadcasterAdapter` (`GET /api/v1/logs/stream`) lengkap dengan heartbeat keep-alive, penanganan klien putus, dan filter opsional pada stream.
 
 ## Kriteria Penerimaan (Acceptance Criteria)
 1. Pesan log yang dipublikasikan ke RabbitMQ maupun `POST /api/v1/logs/ingest` tersimpan di `app_logs`, ter-agregasi di `error_aggregates`, dan muncul di stream SSE dalam `< 500 ms`.
-2. Pesan rusak (malformed JSON) otomatis dialihkan ke `sentinel.logs.dlq` tanpa menghentikan consumer.
+2. Pesan rusak (malformed JSON) otomatis dialihkan ke `logialog.logs.dlq` tanpa menghentikan consumer.
 
 ### Instruksi Eksekusi Kode
 1. Analisis arsitektur dan file terkait sebelum mengubah kode.
@@ -381,7 +381,7 @@ Anda adalah Senior/Principal Software Engineer yang bertugas mengimplementasikan
 
 ### Konteks & Sasaran
 ## Ringkasan Task
-Membangun backend engine eksekusi HTTP Proxy setara Postman di atas **Java 25 Virtual Threads**, manajemen koleksi pengujian API, dan injeksi otomatis `X-Sentinel-Trace-Id` sesuai **PRD Logia Log v3.1 (Bagian 05.2: FR-API-01..07 & Bagian 08.2)**.
+Membangun backend engine eksekusi HTTP Proxy setara Postman di atas **Java 25 Virtual Threads**, manajemen koleksi pengujian API, dan injeksi otomatis `X-Logia-Trace-Id` sesuai **PRD Logia Log v3.1 (Bagian 05.2: FR-API-01..07 & Bagian 08.2)**.
 
 ## Kontrak Endpoint & SLA
 - `POST /api/v1/proxy/execute`: Mengeksekusi HTTP request ke endpoint target mana pun dengan **overhead latensi `< 15 ms`** (SLA Bagian 10.1).
@@ -396,7 +396,7 @@ Membangun backend engine eksekusi HTTP Proxy setara Postman di atas **Java 25 Vi
   4. `API_KEY` (sisip ke Header atau Query Params)
   5. `OAUTH2` (pengambilan token via *Client Credentials* / *Authorization Code*)
 - [ ] Dukungan multi-format payload (**FR-API-05**): `none`, `form-data` (multipart), `x-www-form-urlencoded`, `raw` (`JSON`/`XML`/`Text`/`HTML`), dan `binary`.
-- [ ] **FR-API-07**: Suntikkan header unik `X-Sentinel-Trace-Id` secara otomatis pada setiap eksekusi dan rekam metrik (`status_code`, `duration_ms`, `response_size_bytes`, `response_headers`, `response_body`) ke tabel `api_test_histories`.
+- [ ] **FR-API-07**: Suntikkan header unik `X-Logia-Trace-Id` secara otomatis pada setiap eksekusi dan rekam metrik (`status_code`, `duration_ms`, `response_size_bytes`, `response_headers`, `response_body`) ke tabel `api_test_histories`.
 - [ ] Implementasikan endpoint CRUD koleksi & riwayat eksekusi pengujian API.
 
 ## Kriteria Penerimaan (Acceptance Criteria)
@@ -437,11 +437,11 @@ Membangun ruang kerja pengujian API interaktif setara Postman (`ApiTestingStudio
 - [ ] **FR-API-04**: Tabel `HeaderKeyValueEditor` dengan auto-complete HTTP header standar dan mode *Bulk Edit*.
 - [ ] **FR-API-05**: Editor Request Body multi-format termasuk integrasi **Monaco Editor** untuk payload `raw` (`JSON`, `XML`, `Text`, `HTML`) lengkap dengan tombol *Beautify / Format*.
 - [ ] **FR-API-06**: Panel `ApiResponseViewer` menampilkan Status Code Badge (`200 OK`, `400`, `500`), Waktu Eksekusi (`ms`), Ukuran Payload (`KB`), tab *Pretty / Raw / Preview*, dan *Response Headers*.
-- [ ] **FR-API-07**: Sidebar manajemen Koleksi & History + tombol aksi kontekstual **`Lihat Log & Diagnosis AI untuk Request Ini`** ketika respons error terdeteksi pada `X-Sentinel-Trace-Id` terkait.
+- [ ] **FR-API-07**: Sidebar manajemen Koleksi & History + tombol aksi kontekstual **`Lihat Log & Diagnosis AI untuk Request Ini`** ketika respons error terdeteksi pada `X-Logia-Trace-Id` terkait.
 
 ## Kriteria Penerimaan (Acceptance Criteria)
 1. Pengguna dapat membuat koleksi, menyusun request lengkap, menekan **SEND REQUEST**, dan menginspeksi hasil respons tanpa meninggalkan Logia Log.
-2. Saat terjadi kegagalan HTTP `4xx`/`5xx` dari layanan yang terhubung, tombol korelasi langsung membuka log dan diagnosis berdasarkan `X-Sentinel-Trace-Id`.
+2. Saat terjadi kegagalan HTTP `4xx`/`5xx` dari layanan yang terhubung, tombol korelasi langsung membuka log dan diagnosis berdasarkan `X-Logia-Trace-Id`.
 
 ### Instruksi Eksekusi Kode
 1. Analisis arsitektur dan file terkait sebelum mengubah kode.
