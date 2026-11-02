@@ -1,6 +1,6 @@
-# Logia Log v3.1 — Backend Service
+# Logia Log — Backend Service
 
-Layanan inti **Logia Log v3.1 (Target-Agnostic Enterprise Edition)** yang dibangun menggunakan **Clean / Hexagonal Architecture (Ports & Adapters)** dan **Event-Driven Architecture**.
+Layanan inti **Logia Log (Target-Agnostic Enterprise Edition)** yang dibangun menggunakan **Clean / Hexagonal Architecture (Ports & Adapters)** dan **Event-Driven Architecture**.
 
 ---
 
@@ -195,7 +195,7 @@ src/main/java/com/logialog/
 
 ## 8. Troubleshooting Umum
 
-- **Error `Logia Log v3.1 membutuhkan Java 25 LTS` saat menjalankan Maven:**
+- **Error `Logia Log membutuhkan Java 25 LTS` saat menjalankan Maven:**
   Artinya `JAVA_HOME` di terminal Anda masih menunjuk ke JDK di bawah versi 25 (misalnya JDK 11/17/21). Ikuti langkah pada **Bagian 2** di atas.
 - **Gagal konek ke PostgreSQL (`Connection refused` di port `5432`):**
   Pastikan Docker container `logialog_postgres` atau service PostgreSQL `18.4` lokal sudah menyala, dan username/password di `backend/.env` sesuai.

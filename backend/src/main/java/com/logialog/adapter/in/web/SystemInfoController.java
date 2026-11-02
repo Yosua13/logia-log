@@ -19,7 +19,7 @@ public class SystemInfoController {
 	@GetMapping("/info")
 	public Map<String, Object> systemInfo() {
 		return Map.of(
-				"platform", "Logia Log v3.1 (Target-Agnostic Enterprise Edition)",
+				"platform", "Logia Log (Target-Agnostic Enterprise Edition)",
 				"architecture", "Clean Hexagonal + Event-Driven",
 				"javaVersion", Runtime.version().toString(),
 				"jvmName", System.getProperty("java.vm.name", "HotSpot 64-Bit Server VM"),

@@ -1,4 +1,4 @@
-# Logia Log v3.1 (Target-Agnostic Enterprise Edition)
+# Logia Log (Target-Agnostic Enterprise Edition)
 
 **Unified Real-Time Observability (Setara Grafana) • Interactive API Testing Studio (Setara Postman) • Dynamic DB Schema Injection • 7-Layer Deep GitHub AI Diagnostic Platform**
 
@@ -56,7 +56,7 @@ logia-log/
 │       ├── entities/                             # Domain TypeScript Interfaces
 │       └── shared/                               # GoldFrameCard, SharpButton, TacticalTabs, API Client
 ├── target-simulation/                            # [KOSONG / AGNOSTIK] Slot opsional sandbox masa depan
-├── docs/                                         # Dokumen PRD Logia Log v3.1 Enterprise Edition
+├── docs/                                         # Dokumen PRD Logia Log Enterprise Edition
 └── docker-compose.yml                            # PostgreSQL 18.4 & RabbitMQ 4.x (membaca backend/.env)
 ```
 

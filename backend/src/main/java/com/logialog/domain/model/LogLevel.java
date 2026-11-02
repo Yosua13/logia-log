@@ -12,3 +12,4 @@ public enum LogLevel {
 		return this == ERROR || this == FATAL;
 	}
 }
+

@@ -60,3 +60,4 @@ public class LogIngestionService implements IngestLogUseCase {
 	}
 
 }
+

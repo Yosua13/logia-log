@@ -39,3 +39,4 @@ public class SseLogBroadcasterAdapter implements LogStreamBroadcasterPort {
 	}
 
 }
+

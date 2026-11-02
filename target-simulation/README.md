@@ -1,6 +1,6 @@
 # Target Simulation Slot (Target-Agnostic / Kosong secara Default)
 
-Sesuai **PRD Logia Log v3.1 (Bagian 06)**, direktori ini sengaja dikosongkan karena Logia Log dirancang **Target-Agnostic (Plug-and-Play)**.
+Sesuai **PRD Logia Log (Bagian 06)**, direktori ini sengaja dikosongkan karena Logia Log dirancang **Target-Agnostic (Plug-and-Play)**.
 
 Logia Log dapat langsung dihubungkan ke aplikasi eksternal atau microservice mana pun melalui:
 1. **API Testing Studio** (`/api/v1/proxy/execute`) untuk menguji REST API target secara langsung.

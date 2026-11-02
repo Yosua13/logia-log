@@ -1,5 +1,5 @@
 -- =============================================================================
--- LOGIA LOG v3.1 (TARGET-AGNOSTIC EDITION)
+-- LOGIA LOG (TARGET-AGNOSTIC EDITION)
 -- PostgreSQL 18.4 Core Database Schema (Flyway V1 Baseline)
 -- =============================================================================
 -- Catatan: PostgreSQL 18 menyediakan fungsi native uuidv7() untuk time-ordered UUID!

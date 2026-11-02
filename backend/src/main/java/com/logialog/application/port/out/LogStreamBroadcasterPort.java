@@ -7,3 +7,4 @@ public interface LogStreamBroadcasterPort {
 	void broadcast(LogEntry logEntry);
 
 }
+

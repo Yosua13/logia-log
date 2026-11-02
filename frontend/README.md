@@ -40,7 +40,7 @@ npm -v
    Isi konfigurasi pada `frontend/.env`:
    ```env
    VITE_API_BASE_URL=/api/v1
-   VITE_APP_TITLE="Logia Log v3.1 • Target-Agnostic Observability & API Studio"
+   VITE_APP_TITLE="Logia Log • Target-Agnostic Observability & API Studio"
    VITE_SSE_LOG_STREAM_PATH=/api/v1/logs/stream
    ```
 
@@ -118,7 +118,7 @@ src/
 
 ## 5. Sistem Desain UI/UX (60-30-10 & Sharp-Angled Geometry)
 
-Sesuai **PRD Logia Log v3.1 (Bagian 07)**, seluruh komponen UI wajib mematuhi aturan desain berikut:
+Sesuai **PRD Logia Log (Bagian 07)**, seluruh komponen UI wajib mematuhi aturan desain berikut:
 - **60% Warna Dominan**: `#0A0A0A` (*Obsidian Black*) & `#121212` (*Elevated Surface*).
 - **30% Warna Sekunder Struktural**: `#D4AF37` (*Metallic Gold*), `#C5A059` (*Champagne Gold*), `#9A7B2C` (*Deep Gold Border*).
 - **10% Warna Aksen Interaktif**: `#FFD700` (*Pure Luminous Gold*) & `#F59E0B` (*Amber Gold Glow*) dengan teks kontras `#0A0A0A`.

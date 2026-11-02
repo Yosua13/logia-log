@@ -32,6 +32,12 @@
 set -euf
 [ "${MVNW_VERBOSE-}" != debug ] || set -x
 
+# Ensure Logia Log uses Java 25.0.5.0.2 LTS if installed
+if [ -d "/c/Program Files/Java/jdk-25.0.5.0.2" ]; then
+  JAVA_HOME="/c/Program Files/Java/jdk-25.0.5.0.2"
+  PATH="$JAVA_HOME/bin:$PATH"
+fi
+
 # OS specific support.
 native_path() { printf %s\\n "$1"; }
 case "$(uname)" in
