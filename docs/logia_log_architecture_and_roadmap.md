@@ -1,6 +1,6 @@
 # Analisis PRD Logia Log v3.1, Arsitektur Enterprise & Peta Pengerjaan GitHub Issues
 
-Dokumen ini merangkum hasil analisis menyeluruh terhadap [PRD_SentinelAI_v3_Enterprise_Edition-v2.docx](file:///d:/project_yosua/logia-log/docs/PRD_SentinelAI_v3_Enterprise_Edition-v2.docx), pembaruan tech stack ke versi terbaru pada workspace, pemilihan **Redis SaaS gratis terbaik (Upstash)**, struktur arsitektur backend & frontend, serta daftar **16 GitHub Issues** yang telah dibuat terpisah pada repositori `Yosua13/logia-log`.
+Dokumen ini merangkum hasil analisis menyeluruh terhadap dokumen PRD Logia Log v3.1 Enterprise Edition ([PRD_SentinelAI_v3_Enterprise_Edition-v2.docx](file:///d:/project_yosua/logia-log/docs/PRD_SentinelAI_v3_Enterprise_Edition-v2.docx)), pembaruan tech stack ke versi terbaru pada workspace, pemilihan **Redis SaaS gratis terbaik (Upstash)**, struktur arsitektur backend & frontend, serta daftar **16 GitHub Issues** yang telah dibuat terpisah pada repositori `Yosua13/logia-log`.
 
 > [!IMPORTANT]
 > Pada environment Windows Anda, JDK `25.0.5.0.2` terpasang di `C:\Program Files\Java\jdk-25.0.5.0.2`. Script Maven Wrapper (`mvnw.cmd` dan `mvnw`) telah dikonfigurasi dengan deteksi otomatis sehingga setiap eksekusi Maven langsung menggunakan JDK 25 LTS secara native.
