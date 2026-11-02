@@ -37,13 +37,11 @@ public class LogStreamController {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public LogEntry ingestLog(
 			@Valid @RequestBody LogIngestRequest request,
-			@RequestHeader(name = "X-Logia-Trace-Id", required = false) String logiaTraceId,
-			@RequestHeader(name = "X-Sentinel-Trace-Id", required = false) String legacyTraceId
+			@RequestHeader(name = "X-Logia-Trace-Id", required = false) String logiaTraceId
 	) {
-		String headerTrace = (logiaTraceId != null && !logiaTraceId.isBlank()) ? logiaTraceId : legacyTraceId;
 		String effectiveTraceId = (request.traceId() != null && !request.traceId().isBlank())
 				? request.traceId()
-				: headerTrace;
+				: logiaTraceId;
 
 		return ingestLogUseCase.ingest(new IngestLogCommand(
 				request.serviceName(),

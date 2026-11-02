@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS api_test_requests (
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 5. API Test Histories (Auto-Correlated via X-Sentinel-Trace-Id)
+-- 5. API Test Histories (Auto-Correlated via X-Logia-Trace-Id)
 CREATE TABLE IF NOT EXISTS api_test_histories (
     id                  UUID PRIMARY KEY DEFAULT uuidv7(),
     request_id          UUID REFERENCES api_test_requests(id) ON DELETE SET NULL,

@@ -39,7 +39,7 @@ public class SecurityConfig {
 		config.setAllowedOrigins(origins);
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));
-		config.setExposedHeaders(List.of("X-Logia-Trace-Id", "X-Sentinel-Trace-Id"));
+		config.setExposedHeaders(List.of("X-Logia-Trace-Id"));
 		config.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
